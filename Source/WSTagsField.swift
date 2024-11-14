@@ -816,7 +816,7 @@ extension WSTagsField: UITextFieldDelegate {
 
     public func textFieldDidBeginEditing(_ textField: UITextField) {
         textDelegate?.textFieldDidBeginEditing?(textField)
-        unselectAllTagViewsAnimated(true)
+//        unselectAllTagViewsAnimated(true)
     }
     
     public func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
