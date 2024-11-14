@@ -10,7 +10,6 @@ import UIKit
 
 public struct WSTagAcceptOption: OptionSet {
     public let rawValue: Int
-
     public init(rawValue: Int) {
         self.rawValue = rawValue
     }
@@ -226,6 +225,8 @@ open class WSTagsField: UIScrollView {
 
     /// Called when a tag has been removed. You should use this opportunity to update your local list of selected items.
     open var onDidRemoveTag: ((WSTagsField, _ tag: WSTag) -> Void)?
+    
+    open var onDidDeleteTag: ((WSTagsField, _ tag: WSTagView) -> Void)?
 
     /// Called when a tag has been selected.
     open var onDidSelectTagView: ((WSTagsField, _ tag: WSTagView) -> Void)?
@@ -527,17 +528,23 @@ open class WSTagsField: UIScrollView {
         }
 
         if tagView.selected {
-            tagView.onDidRequestDelete?(tagView, nil)
+//            tagView.onDidRequestDelete?(tagView, nil)
+            tagView.selected = false
+            onDidUnselectTagView?(self, tagView)
             return
         }
 
         tagView.selected = true
-        tagViews.filter { $0 != tagView }.forEach {
-            $0.selected = false
-            onDidUnselectTagView?(self, $0)
-        }
+//        tagViews.filter { $0 != tagView }.forEach {
+//            $0.selected = false
+//            onDidUnselectTagView?(self, $0)
+//        }
 
         onDidSelectTagView?(self, tagView)
+    }
+    
+    open func deleteTagView(_ tagView: WSTagView, animated: Bool = false) {
+        onDidDeleteTag?(self, tagView)
     }
 
     open func unselectAllTagViewsAnimated(_ animated: Bool = false) {
@@ -650,8 +657,7 @@ extension WSTagsField {
             }
 
             if self?.isTextFieldEmpty ?? true, let tagView = self?.tagViews.last {
-                self?.selectTagView(tagView, animated: true)
-                self?.textField.resignFirstResponder()
+                self?.deleteTagView(tagView, animated: true)
             }
         }
 
